@@ -60,3 +60,12 @@ Preserved failure history:
 ## Required merged-result verification
 
 On the exact merge SHA, rerun the complete revised validation rail above; confirm `src-tauri/target/release/peng.exe` is produced; inspect command registration and unchanged capabilities; and rerun file-backed CRUD/reopen, malformed JSON, not-found, conflict, and rejected-input no-mutation tests. Verify the merge diff contains no search/FTS, migration framework, bundle path, compatibility layer, fallback store, second aggregate, or additional dependency.
+
+## Remediation round 1
+
+- **F-001 — schema-version component count:** changed `src-tauri/src/domain/asset.rs` so `schemaVersion` accepts exactly two non-empty decimal components (`major.minor`) and rejects both too few (`1`) and too many (`1.2.3`) components. Added focused assertions for both rejected values without weakening existing boundary coverage.
+- Remediation commit: `f29b9914ceca3fbbc23675ee7e865b2148e805e7`.
+- Existing PR updated in place: https://github.com/merceralex397-collab/peng/pull/1; no second PR was created.
+- Public review finding: https://github.com/merceralex397-collab/peng/pull/1#issuecomment-5517442078.
+
+Remediation validation from `.worktrees/lib-001`: focused domain Rust 2024 formatting and domain tests exit 0; the complete scoped Rust 2024 formatting rail exits 0; full Rust tests exit 0 with 7 passed; clippy with `-D warnings` exits 0; Svelte check exits 0 with 0 errors and 0 warnings; Vite build exits 0; no-bundle Tauri release build exits 0 and produces `src-tauri/target/release/peng.exe`; `git diff --check` exits 0. The delta contains only the authorized domain source file; generated schema paths remain byte-identical despite Windows stat dirtiness.
