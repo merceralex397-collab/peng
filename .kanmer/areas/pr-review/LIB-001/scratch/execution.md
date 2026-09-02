@@ -12,3 +12,9 @@ Result: exit 1. Tauri `generate_handler!` could not resolve the command macro sy
 - 2026-09-02T22:15:51.279Z lease-phase running-command → implementing (lease 29cead4d-dd3a-4d9c-b13c-be78f43fefc9 rev 4; expires 2026-09-02T22:45:51.266Z)
 
 - 2026-09-02T22:17:58.382Z lease-phase implementing → running-command (lease 29cead4d-dd3a-4d9c-b13c-be78f43fefc9 rev 5; expires 2026-09-02T22:47:58.367Z)
+
+Resume attempt 2: validated the exact recorded branch/worktree and renewed lease `29cead4d-dd3a-4d9c-b13c-be78f43fefc9` through revision 6. Restored forbidden `src-tauri/build.rs` and `src-tauri/src/main.rs` exactly to pinned HEAD; generated schema paths have no real `git diff` despite Windows stat/line-ending dirtiness. Scoped handler macro, Debug-bound, and unused-import compile defects were corrected only in authorized files.
+
+Passing evidence: `cargo test --manifest-path src-tauri/Cargo.toml domain` exit 0 (3 tests); `cargo test --manifest-path src-tauri/Cargo.toml storage` exit 0 (3 tests); `cargo test --manifest-path src-tauri/Cargo.toml application` exit 0 (1 test); full `cargo test --manifest-path src-tauri/Cargo.toml` exit 0 (7 tests); `cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings` exit 0; `npm run check` exit 0 with 0 errors/0 warnings; `npm run build` exit 0.
+
+Blocking retained failure: `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check` exit 1 solely because rustfmt removes the trailing blank lines present at pinned HEAD in forbidden `src-tauri/build.rs` and `src-tauri/src/main.rs`. Packet requires this exact command to pass, forbids modifying those paths, and controller explicitly required restoring their exact blank lines. No authorized implementation file was reported unformatted. This is a plan/baseline contradiction requiring controller disposition/replanning. No checklist tick, report, commit, push, PR, or stage move was performed.
