@@ -1,8 +1,24 @@
 areas:
   - id: pr-review
-    name: PR Review
+    name: Core Library
+    color: "#5bd1c9"
+    prefix: LIB
+  - id: bundles
+    name: Portable Bundles
+    color: "#ffcf7a"
+    prefix: BND
+  - id: desktop
+    name: Desktop Experience
+    color: "#5b8cff"
+    prefix: UI
+  - id: adapters
+    name: Target Adapters
     color: "#b48cff"
-    prefix: PR
+    prefix: ADP
+  - id: platform
+    name: Platform
+    color: "#6b7280"
+    prefix: PLAT
 idPrefixes:
   ticket: TICK
   plan: PLAN
