@@ -1,6 +1,6 @@
 # Open questions — LIB-001
 
-- [ ] Resolve the delivery boundary: must LIB-001 include minimal persistence and a frontend invocation so its create/update Tauri commands are production-wired immediately, or should the ticket requirement be narrowed so LIB-002 and UI-001 provide those production connections? A registered-only command, test-only caller, or in-memory fallback would violate the current project conduct rules.
+- [x] Resolved 2026-09-02: LIB-001 includes the minimum real SQLite-backed application service and frontend invocation needed to make typed create/read/update/delete commands production-wired. No in-memory fallback, placeholder service, or test-only registration is permitted. LIB-002 retains ordered migrations, restart recovery, FTS, and search commands.
 
 ## Parked (explicitly deferred)
 

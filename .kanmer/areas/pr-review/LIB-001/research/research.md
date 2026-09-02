@@ -30,4 +30,4 @@ What is the smallest correct canonical prompt-domain model and Rust/Tauri bounda
 
 ## Open questions
 
-- Must LIB-001 include the minimal persistence and frontend invocation needed to make create/update commands production-reachable, or should its “production-wired” requirement be narrowed so those commands become live only when LIB-002 and UI-001 land?
+None. The delivery boundary was resolved: LIB-001 includes the minimum real SQLite-backed CRUD service and frontend invocation; LIB-002 retains ordered migrations, restart recovery, FTS, and search.
