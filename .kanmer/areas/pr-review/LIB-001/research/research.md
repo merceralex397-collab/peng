@@ -1,0 +1,33 @@
+# Research — LIB-001: Canonical asset domain and typed command boundary
+
+## Question
+
+What is the smallest correct canonical prompt-domain model and Rust/Tauri boundary that follows Peng's Phase 0 contract, and where can it land without duplicating the persistence work assigned to LIB-002?
+
+## Findings
+
+- The Rust production core is still only the generated shell: `src-tauri/src/lib.rs` constructs `tauri::Builder` and runs it, while `src-tauri/src/main.rs` delegates to `peng_lib::run`. There are no domain, application-service, repository, command, or error modules yet. (Repository inspection: `src-tauri/src/lib.rs`, `src-tauri/src/main.rs`.)
+- The frontend is a static disabled scaffold and invokes no Tauri commands. Consequently, merely registering new commands would still leave them unreachable from a production caller. (Repository inspection: `src/App.svelte`; project conduct in `AGENTS.md`, “Done means wired”.)
+- Phase 0's authoritative lifecycle requires one prompt with stable UUID, name, summary, status, tags, body, and prompt-specific data; the draft must later persist, be searchable, export, delete, and import with identity/content/metadata intact. LIB-001 blocks LIB-002 and UI-001, so its public types must be suitable for both without embedding SQLite or UI concerns. (`docs/frd/FRD-001-phase-zero-vertical-slice.md`; Kanmer `get_links LIB-001`.)
+- The canonical aggregate is one `Asset`, discriminated by type, with shared organisation/history services. It must not become five separate models. Phase 0 only needs the prompt variant, but the discriminator must retain the five documented values and allow the design's forward-readable unknown type strings rather than hard-coding a closed Rust enum that cannot represent them. (`AGENTS.md`, Domain and persistence rules; `Peng_Design_Pack/Peng_Axiomatic_Design_Spec.md` sections 2.1, 8.1–8.2; `Peng_Bundle_1.0.schema.json` `$defs.assetType`.)
+- The portable-format schema gives concrete boundary validation: UUID format; asset type token `^[a-z][a-z0-9._-]{0,63}$`; name length 1–300; summary length at most 2000; statuses `draft`, `ready`, `deprecated`, `archived`; tags unique with each tag 1–100; source kind `created`, `imported`, `linked`, `generated`; at least one version; and arbitrary unknown JSON properties for forward readability. (`Peng_Design_Pack/Peng_Bundle_1.0.schema.json`.)
+- The Phase 0 prompt needs body plus type-specific data. Prompt type data may carry variables (name, description, required/default/example), task/category, compatibility, I/O formats, advisory temperature/reasoning hints, examples, and tests; only body and name are globally required at this phase. (`Peng_Design_Pack/Peng_Axiomatic_Design_Spec.md` section 9.1.)
+- Working edits belong to one mutable draft and should not mint immutable versions per keystroke. A version record holds revision, body, validated type-specific JSON, schema version, hash, and timestamps; persistence and hashing are the responsibility of later tickets, not the domain command DTO itself. (`docs/adr/ADR-002-canonical-storage.md`; design spec sections 8.2 and 12.4.)
+- Rust owns validation and returns a stable structured error shaped as `code`, `message`, optional `field`, optional `details`, and `retryable`. Tauri commands must remain thin: validate a typed request, call one application service, and return a typed result or this error. (`AGENTS.md`, Intended stack and boundaries; design spec section 12.5.)
+- Existing Tauri capabilities grant only `core:default`; typed application commands do not need broad filesystem, SQL, process, or shell permissions. The webview must never receive an unrestricted storage/process boundary. (`src-tauri/capabilities/default.json`; `AGENTS.md`, Intended stack and boundaries.)
+- The manifest currently has only `serde`, `serde_json`, and `tauri` as direct Rust dependencies. `uuid`, `chrono`, `time`, and `thiserror` occur transitively in `Cargo.lock`, but Peng code cannot rely on transitive crates without declaring them; the contributor rules require any added package to be explicitly approved by the brief. (`src-tauri/Cargo.toml`, `src-tauri/Cargo.lock`, `AGENTS.md`, Implementation discipline.)
+- The controller resolved the delivery boundary from the current brief and conduct rules: LIB-001 owns the minimum real SQLite-backed application service and frontend invocation required to make create/read/update/delete commands production-reachable. It may not use an in-memory fallback, placeholder service, or test-only registration. LIB-002 still owns the ordered migration system, restart-recovery proof, FTS5 index, and search commands. (Controller clarification recorded 2026-09-02; ticket body; `HZN-001/context.md`; `AGENTS.md`, Agent conduct rules 2, 7, and 14.)
+- The project declares no external research sources for LIB-001's `pr-review` area and `phase-0`, `rust` labels, so no declared URL or llms.txt source was available or fetched. (Kanmer `get_sources` result: `declaredCount: 0`.)
+
+## Implications
+
+- Keep a single domain module centered on `Asset` and small validated value types/DTOs. Model `AssetType` as a validated string/newtype with named canonical constants so unknown contract-compliant types survive round trips; model the four statuses as a closed enum because the v1 schema closes that set.
+- Keep prompt-specific data behind the asset discriminator and preserve JSON fields needed by the portable format. Do not introduce separate Prompt organisation/history/storage systems.
+- Define one stable `PengError` result contract at the command boundary and field-specific validation errors. Avoid wrapper/factory layers; a thin command should call one concrete application operation.
+- Include only enough real SQLite storage and one minimal frontend invocation to prove the CRUD command path is live. Do not add the ordered migration framework, restart-recovery proof, FTS index/search commands, archives, attachments, version history, adapters, or Phase 1 organisation behavior; LIB-002 and later tickets extend the same types and repository.
+- Do not broaden Tauri capabilities for domain commands.
+- Planning must name the minimal SQLite-backed repository and frontend caller explicitly, then leave ordered migrations/restart recovery/FTS and search to LIB-002. Any direct UUID/time/error/SQLite crate must be justified by this resolved current requirement and named in the approved plan before it is added.
+
+## Open questions
+
+- Must LIB-001 include the minimal persistence and frontend invocation needed to make create/update commands production-reachable, or should its “production-wired” requirement be narrowed so those commands become live only when LIB-002 and UI-001 land?
