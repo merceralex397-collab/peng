@@ -1,13 +1,13 @@
 ---
 kind: review-attestation
 pr: "1"
-head_sha: "4e28c71d0b47fb44c197eb328ae886101b365d9e"
-verdict: needs-changes
+head_sha: "f29b9914ceca3fbbc23675ee7e865b2148e805e7"
+verdict: pass
 reviewer: "lib001-review-1"
 independent: true
 plan_hash: "f6d5140f568996dc"
-ticket_updated: "2026-09-02T22:37:44.678Z"
-board_sha: "744b5276bf2f1c90dc2a1547f8e9ecd68de7c117"
+ticket_updated: "2026-09-02T22:46:01.159Z"
+board_sha: "1b2f794290767144beba52bcbfc1d1ce857ebe68"
 expected_reviewers:
   - "lib001-review-1"
 threads_snapshot: []
@@ -15,38 +15,36 @@ findings:
   - id: F-001
     severity: major
     summary: "Schema-version validation accepts values outside the authoritative major.minor contract."
-    disposition: open
+    disposition: fixed
 ---
-# Independent review — LIB-001
+# Independent delta review — LIB-001
 
-## Scope and changes reviewed
+## Scope
 
-Reviewed PR #1 at exact head `4e28c71d0b47fb44c197eb328ae886101b365d9e` against the complete LIB-001 packet, revised plan `f6d5140f568996dc`, HZN-001 group context, and the linked PRD, FRD, ADR, design pack, and portable-format schema. The diff stays within the declared files and implements one canonical Asset model, one SQLite-backed service/store, four thin Tauri commands, and the minimal production frontend caller. No FTS/search, migration framework, bundle implementation, expanded capability, compatibility path, fallback store, or additional dependency beyond bundled rusqlite was introduced.
+This is review round 1 and is limited to original finding F-001, the lines changed since the prior attested head `4e28c71d0b47fb44c197eb328ae886101b365d9e`, their direct schema contract and validation callers, and the relevant tests. The exact reviewed PR head is `f29b9914ceca3fbbc23675ee7e865b2148e805e7`.
 
-The reviewer is an independent agent role and is not the implementation author. The expected reviewer set contains only `lib001-review-1`; that reviewer posted finding F-001 publicly on this exact head at https://github.com/merceralex397-collab/peng/pull/1#issuecomment-5517442078. GitHub exposed no review threads, reviews, requested changes, or unresolved conversations at gather time.
+The expected reviewer set contains only `lib001-review-1`. This independent reviewer posted the fixed disposition publicly on the exact head at https://github.com/merceralex397-collab/peng/pull/1#issuecomment-5517492242. GitHub exposed no review threads, reviews, requested changes, or unresolved conversations at gather time, so `threads_snapshot` is truthfully empty.
+
+## Delta reviewed
+
+Commit `f29b9914ceca3fbbc23675ee7e865b2148e805e7` changes only `src-tauri/src/domain/asset.rs`, with 10 insertions and 2 deletions. The validator now requires `schema_parts.len() == 2` and retains the non-empty decimal check for each component. This exactly implements the authoritative `Peng_Bundle_1.0.schema.json` pattern `^\d+\.\d+$`. The same test module adds explicit rejection assertions for `1` and `1.2.3`, without weakening prior boundary coverage.
 
 ## Acceptance checks
 
-Independent commands run from `.worktrees/lib-001`:
+Independent delta validation from `.worktrees/lib-001`:
 
-- Scoped Rust 2024 `rustfmt --check` command from the revised plan — exit 0.
-- `cargo test --manifest-path src-tauri/Cargo.toml` — exit 0; 7 passed, 0 failed.
-- `cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings` — exit 0.
-- `npm run check` — exit 0; 0 errors and 0 warnings.
-- `npm run build` — exit 0.
-- `npm run tauri build -- --no-bundle` — exit 0; produced `src-tauri/target/release/peng.exe`.
-- `git diff --check 3ee6e3549ffbe3deeb2e4ea1b2f5e34329ff82a1..HEAD` — exit 0.
+- `rustfmt --edition 2024 --check src-tauri/src/domain/asset.rs` — exit 0.
+- `cargo test --manifest-path src-tauri/Cargo.toml domain` — exit 0; 3 passed, 0 failed.
+- `git diff --check 4e28c71d0b47fb44c197eb328ae886101b365d9e..f29b9914ceca3fbbc23675ee7e865b2148e805e7` — exit 0.
 
-GitHub reported PR #1 OPEN, non-draft, merge state CLEAN, base `main`, head branch `LIB-001-canonical-asset-domain`, exact head SHA above, and no status checks configured. The ticket does not declare a required GitHub check; the repository validation commands above provide the applicable evidence.
+The remediation report records the full revised-plan validation rail as passing on this head, including the no-bundle release build. GitHub reports no required status checks for this repository. The delta introduces no new dependency, caller change, contract expansion, or out-of-scope behavior.
 
-## Findings and dispositions
+## Finding disposition
 
-### F-001 — Major — Open
+### F-001 — Major — Fixed
 
-`src-tauri/src/domain/asset.rs` validates `schemaVersion` as one or more dot-separated decimal components. It therefore accepts `1` and `1.2.3`, contrary to the authoritative Peng v1 schema pattern `^\d+\.\d+$` and the plan's requirement that the canonical boundary enforce the schema-version token. Current tests cover `1..0` but do not cover too few or too many components.
+The canonical Rust boundary now rejects both too-few and too-many schema-version components and accepts the required `major.minor` form. The implementation and focused tests match the portable-format contract. Public disposition: https://github.com/merceralex397-collab/peng/pull/1#issuecomment-5517492242.
 
-Disposition: open. Restrict the existing validator to exactly two non-empty decimal components and add focused negative assertions for both `1` and `1.2.3`. This is a bounded in-scope remediation in the already-authorized domain file and test module.
+## Verdict
 
-## Verdict and residual risk
-
-Verdict: `needs-changes`. F-001 is an open major contract finding and blocks merge. All other reviewed scope and validation rails passed; no separate residual risk is accepted at this round. The same branch, worktree, PR, and claim must be retained for the single remediation batch.
+Verdict: `pass`. F-001 is fixed, the exact-head delta is bounded and validated, the expected reviewer has settled, there are no GitHub review threads, and no open blocker or major finding remains. No residual risk is accepted for this remediation.
