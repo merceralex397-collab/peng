@@ -4,4 +4,4 @@ args = [ "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", "& (Join-Path $
 
 [mcp_servers.kanmer.env]
 KANMER_BOARD_BRANCH = "kanmer-board"
-
+# The Kanmer launcher resolves the repository-scoped board worktree.
