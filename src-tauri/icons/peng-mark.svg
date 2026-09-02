@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Peng</title>
+  <rect width="512" height="512" rx="112" fill="#17262b"/>
+  <path d="M256 78c-78 0-142 64-142 142v72c0 78 64 142 142 142s142-64 142-142v-72c0-78-64-142-142-142Z" fill="#f7f9f9"/>
+  <path d="M256 166c-54 0-98 44-98 98v44c0 54 44 98 98 98s98-44 98-98v-44c0-54-44-98-98-98Z" fill="#0b8b7c"/>
+  <circle cx="211" cy="205" r="15" fill="#17262b"/>
+  <circle cx="301" cy="205" r="15" fill="#17262b"/>
+  <path d="m256 220 34 29-34 21-34-21 34-29Z" fill="#f2bb62"/>
+  <path d="M176 370 116 430h102l38-42 38 42h102l-60-60" fill="#f2bb62"/>
+</svg>

@@ -1,0 +1,603 @@
+{
+  "$defs": {
+    "assetDescriptor": {
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "name": {
+          "maxLength": 300,
+          "minLength": 1,
+          "type": "string"
+        },
+        "schema_version": {
+          "pattern": "^\\d+\\.\\d+$",
+          "type": "string"
+        },
+        "secret_references": {
+          "items": {
+            "$ref": "#/$defs/secretReference"
+          },
+          "type": "array"
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "status": {
+          "$ref": "#/$defs/assetStatus"
+        },
+        "summary": {
+          "maxLength": 2000,
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "type": {
+          "$ref": "#/$defs/assetType"
+        },
+        "versions": {
+          "items": {
+            "$ref": "#/$defs/versionReference"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "schema_version",
+        "name",
+        "summary",
+        "status",
+        "tags",
+        "source",
+        "versions",
+        "secret_references"
+      ],
+      "type": "object"
+    },
+    "assetReference": {
+      "additionalProperties": true,
+      "properties": {
+        "content_hash": {
+          "$ref": "#/$defs/sha256"
+        },
+        "current_revision": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "path": {
+          "$ref": "#/$defs/safePath"
+        },
+        "type": {
+          "$ref": "#/$defs/assetType"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "path",
+        "current_revision",
+        "content_hash"
+      ],
+      "type": "object"
+    },
+    "assetStatus": {
+      "enum": [
+        "draft",
+        "ready",
+        "deprecated",
+        "archived"
+      ]
+    },
+    "assetType": {
+      "examples": [
+        "prompt",
+        "skill",
+        "plugin",
+        "mcp_server",
+        "subagent"
+      ],
+      "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+      "type": "string"
+    },
+    "attachmentReference": {
+      "additionalProperties": true,
+      "properties": {
+        "media_type": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": "string"
+        },
+        "path": {
+          "$ref": "#/$defs/safePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/rawSha256"
+        },
+        "size": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path",
+        "media_type",
+        "sha256"
+      ],
+      "type": "object"
+    },
+    "collection": {
+      "additionalProperties": true,
+      "properties": {
+        "asset_ids": {
+          "items": {
+            "$ref": "#/$defs/uuid"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "description": {
+          "maxLength": 2000,
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "name": {
+          "maxLength": 300,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "asset_ids"
+      ],
+      "type": "object"
+    },
+    "collectionDocument": {
+      "additionalProperties": true,
+      "properties": {
+        "collections": {
+          "items": {
+            "$ref": "#/$defs/collection"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "collections"
+      ],
+      "type": "object"
+    },
+    "dateTime": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "event": {
+      "additionalProperties": true,
+      "properties": {
+        "asset_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "created_at": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "data": {
+          "type": "object"
+        },
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "kind": {
+          "maxLength": 100,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "asset_id",
+        "kind",
+        "created_at"
+      ],
+      "type": "object"
+    },
+    "exportPolicy": {
+      "additionalProperties": true,
+      "properties": {
+        "include_attachments": {
+          "type": "boolean"
+        },
+        "include_events": {
+          "type": "boolean"
+        },
+        "include_notes": {
+          "type": "boolean"
+        },
+        "secrets": {
+          "const": "references_only"
+        },
+        "versions": {
+          "enum": [
+            "current",
+            "all",
+            "selected"
+          ]
+        }
+      },
+      "required": [
+        "versions",
+        "include_attachments",
+        "include_notes",
+        "include_events",
+        "secrets"
+      ],
+      "type": "object"
+    },
+    "manifest": {
+      "additionalProperties": true,
+      "properties": {
+        "assets": {
+          "items": {
+            "$ref": "#/$defs/assetReference"
+          },
+          "maxItems": 25000,
+          "type": "array"
+        },
+        "bundle_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "checksums_path": {
+          "$ref": "#/$defs/safePath"
+        },
+        "collections_path": {
+          "$ref": "#/$defs/safePath"
+        },
+        "created_at": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "events_path": {
+          "$ref": "#/$defs/safePath"
+        },
+        "export_policy": {
+          "$ref": "#/$defs/exportPolicy"
+        },
+        "format": {
+          "const": "peng"
+        },
+        "format_version": {
+          "const": "1.0"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": "string"
+        },
+        "notes_path": {
+          "$ref": "#/$defs/safePath"
+        },
+        "producer": {
+          "$ref": "#/$defs/producer"
+        },
+        "relationships_path": {
+          "$ref": "#/$defs/safePath"
+        },
+        "schema_path": {
+          "$ref": "#/$defs/safePath"
+        }
+      },
+      "required": [
+        "format",
+        "format_version",
+        "bundle_id",
+        "name",
+        "created_at",
+        "producer",
+        "export_policy",
+        "assets",
+        "relationships_path",
+        "checksums_path"
+      ],
+      "type": "object"
+    },
+    "note": {
+      "additionalProperties": true,
+      "properties": {
+        "asset_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "body": {
+          "maxLength": 1048576,
+          "type": "string"
+        },
+        "created_at": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "updated_at": {
+          "$ref": "#/$defs/dateTime"
+        }
+      },
+      "required": [
+        "id",
+        "asset_id",
+        "body",
+        "created_at"
+      ],
+      "type": "object"
+    },
+    "producer": {
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 100,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "type": "object"
+    },
+    "rawSha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "relationship": {
+      "additionalProperties": true,
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "kind": {
+          "$ref": "#/$defs/relationshipKind"
+        },
+        "note": {
+          "maxLength": 2000,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "target_id": {
+          "$ref": "#/$defs/uuid"
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "target_id",
+        "kind",
+        "created_at"
+      ],
+      "type": "object"
+    },
+    "relationshipDocument": {
+      "additionalProperties": true,
+      "properties": {
+        "relationships": {
+          "items": {
+            "$ref": "#/$defs/relationship"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "relationships"
+      ],
+      "type": "object"
+    },
+    "relationshipKind": {
+      "enum": [
+        "requires",
+        "uses",
+        "extends",
+        "optional",
+        "compatible_with",
+        "supersedes",
+        "related_to",
+        "conflicts_with"
+      ]
+    },
+    "safePath": {
+      "description": "Forward-slash relative archive path; no absolute path, drive prefix, backslash, or parent traversal.",
+      "maxLength": 1024,
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[^\\u0000]+$",
+      "type": "string"
+    },
+    "secretReference": {
+      "additionalProperties": true,
+      "properties": {
+        "description": {
+          "maxLength": 1000,
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "environment",
+            "credential_store",
+            "keyring",
+            "config",
+            "header",
+            "other"
+          ]
+        },
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "kind",
+        "required"
+      ],
+      "type": "object"
+    },
+    "sha256": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "source": {
+      "additionalProperties": true,
+      "properties": {
+        "kind": {
+          "enum": [
+            "created",
+            "imported",
+            "linked",
+            "generated"
+          ]
+        },
+        "uri": {
+          "maxLength": 4096,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "type": "object"
+    },
+    "uuid": {
+      "format": "uuid",
+      "type": "string"
+    },
+    "versionDescriptor": {
+      "additionalProperties": true,
+      "properties": {
+        "asset_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "attachments": {
+          "items": {
+            "$ref": "#/$defs/attachmentReference"
+          },
+          "type": "array"
+        },
+        "body_media_type": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": "string"
+        },
+        "body_path": {
+          "$ref": "#/$defs/safePath"
+        },
+        "change_note": {
+          "maxLength": 2000,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "revision": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "schema_version": {
+          "pattern": "^\\d+\\.\\d+$",
+          "type": "string"
+        },
+        "type_data": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "asset_id",
+        "revision",
+        "schema_version",
+        "created_at",
+        "body_path",
+        "body_media_type",
+        "type_data",
+        "attachments"
+      ],
+      "type": "object"
+    },
+    "versionReference": {
+      "additionalProperties": true,
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/safePath"
+        },
+        "revision": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "revision",
+        "path"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "urn:peng:schema:bundle:1.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Validates manifest, asset, version, relationship, collection, note, and event JSON documents stored inside a .peng archive.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/manifest"
+    },
+    {
+      "$ref": "#/$defs/assetDescriptor"
+    },
+    {
+      "$ref": "#/$defs/versionDescriptor"
+    },
+    {
+      "$ref": "#/$defs/relationshipDocument"
+    },
+    {
+      "$ref": "#/$defs/collectionDocument"
+    },
+    {
+      "$ref": "#/$defs/note"
+    },
+    {
+      "$ref": "#/$defs/event"
+    }
+  ],
+  "title": "Peng portable bundle JSON documents, format 1.0"
+}

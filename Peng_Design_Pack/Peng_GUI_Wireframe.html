@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Peng — GUI wireframe</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f3f6f7;
+      --surface: #ffffff;
+      --surface-2: #f8fafb;
+      --surface-3: #eef3f4;
+      --text: #162126;
+      --muted: #64737a;
+      --faint: #94a0a5;
+      --line: #dde5e7;
+      --line-strong: #cbd7da;
+      --accent: #0b8f7b;
+      --accent-strong: #087362;
+      --accent-soft: #e6f5f1;
+      --sidebar: #172126;
+      --sidebar-2: #1d2a30;
+      --sidebar-text: #eaf1f2;
+      --sidebar-muted: #91a2a8;
+      --shadow: 0 18px 60px rgba(20, 33, 38, .14);
+      --radius: 10px;
+      --radius-sm: 7px;
+      --topbar: 60px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #101719;
+      --surface: #172024;
+      --surface-2: #1c272b;
+      --surface-3: #243136;
+      --text: #ecf3f4;
+      --muted: #9caeb4;
+      --faint: #71858c;
+      --line: #2c3a3f;
+      --line-strong: #3a4b51;
+      --accent: #39c3aa;
+      --accent-strong: #5dd0bb;
+      --accent-soft: #173b36;
+      --sidebar: #0a1012;
+      --sidebar-2: #111a1d;
+      --sidebar-text: #edf4f5;
+      --sidebar-muted: #83969d;
+      --shadow: 0 18px 60px rgba(0, 0, 0, .45);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; overflow: hidden; background: var(--bg); color: var(--text); }
+    button, input, textarea, select { font: inherit; }
+    button { color: inherit; }
+    ::selection { background: color-mix(in srgb, var(--accent) 25%, transparent); }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-rows: var(--topbar) minmax(0, 1fr);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 218px minmax(260px, 660px) 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 0 14px 0 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      z-index: 30;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      font-weight: 760;
+      letter-spacing: -.02em;
+      font-size: 17px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: var(--sidebar);
+      color: white;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.07);
+    }
+
+    .brand-mark svg { width: 21px; height: 21px; }
+    .brand-sub { color: var(--faint); font-weight: 570; font-size: 11px; margin-left: 1px; }
+
+    .global-search {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      border-radius: 9px;
+      transition: border-color .15s, box-shadow .15s, background .15s;
+    }
+
+    .global-search:focus-within {
+      background: var(--surface);
+      border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+
+    .global-search svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
+    .global-search input { border: 0; outline: 0; background: transparent; color: var(--text); width: 100%; min-width: 0; }
+    .global-search input::placeholder { color: var(--faint); }
+    kbd {
+      border: 1px solid var(--line-strong);
+      border-bottom-width: 2px;
+      background: var(--surface);
+      color: var(--muted);
+      border-radius: 5px;
+      padding: 1px 5px;
+      font-size: 10px;
+      line-height: 17px;
+      white-space: nowrap;
+    }
+
+    .top-spacer { min-width: 12px; }
+    .top-actions { display: flex; align-items: center; gap: 7px; }
+
+    .btn {
+      height: 36px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 0 11px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      cursor: pointer;
+      font-weight: 650;
+      font-size: 12.5px;
+      white-space: nowrap;
+      transition: background .12s, border-color .12s, transform .08s;
+    }
+
+    .btn:hover { background: var(--surface-2); border-color: var(--line-strong); }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn.primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+    .btn.quiet { border-color: transparent; background: transparent; color: var(--muted); }
+    .btn.quiet:hover { background: var(--surface-3); color: var(--text); }
+    .btn.icon { width: 36px; padding: 0; }
+    .btn svg { width: 15px; height: 15px; }
+    .count-pill { min-width: 18px; height: 18px; border-radius: 9px; padding: 0 5px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-strong); font-size: 10px; }
+    .primary .count-pill { color: white; background: rgba(255,255,255,.2); }
+
+    .main {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 218px 340px minmax(460px, 1fr);
+    }
+
+    .sidebar {
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--sidebar);
+      color: var(--sidebar-text);
+      border-right: 1px solid rgba(255,255,255,.04);
+    }
+
+    .side-scroll { padding: 14px 10px 12px; overflow: auto; min-height: 0; }
+    .side-bottom { padding: 9px 10px 11px; border-top: 1px solid rgba(255,255,255,.07); }
+    .side-label { padding: 10px 10px 5px; color: var(--sidebar-muted); font-size: 10px; font-weight: 800; letter-spacing: .085em; text-transform: uppercase; }
+
+    .nav-item {
+      width: 100%;
+      height: 34px;
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 0 9px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--sidebar-text);
+      cursor: pointer;
+      text-align: left;
+      font-size: 12.5px;
+      margin: 1px 0;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,.06); }
+    .nav-item.active { background: rgba(57,195,170,.13); color: #fff; }
+    .nav-item.active .nav-icon { color: #5ed5bf; }
+    .nav-icon { width: 17px; height: 17px; display: grid; place-items: center; color: var(--sidebar-muted); }
+    .nav-icon svg { width: 16px; height: 16px; }
+    .nav-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .nav-count { color: var(--sidebar-muted); font-size: 10.5px; font-variant-numeric: tabular-nums; }
+    .collection-dot { width: 8px; height: 8px; border-radius: 50%; background: #6bb5a8; }
+    .collection-dot.gold { background: #d6ac65; }
+    .collection-dot.blue { background: #709ecf; }
+
+    .list-panel {
+      min-width: 0;
+      min-height: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+      display: grid;
+      grid-template-rows: auto auto minmax(0,1fr);
+    }
+
+    .list-heading { padding: 16px 15px 10px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .list-title { font-weight: 760; letter-spacing: -.02em; font-size: 15px; }
+    .list-total { color: var(--muted); font-size: 11px; }
+    .list-toolbar { padding: 0 12px 10px; display: flex; gap: 6px; border-bottom: 1px solid var(--line); }
+
+    .mini-select, .filter-btn {
+      height: 30px;
+      min-width: 0;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      color: var(--muted);
+      border-radius: 7px;
+      padding: 0 8px;
+      font-size: 11px;
+      outline: 0;
+    }
+
+    .filter-btn { cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+    .filter-btn:hover, .mini-select:hover { border-color: var(--line-strong); color: var(--text); }
+    .list-scroll { overflow: auto; min-height: 0; }
+
+    .asset-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 24px minmax(0,1fr) 24px;
+      gap: 8px;
+      padding: 12px 11px 11px 10px;
+      min-height: 79px;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+      background: var(--surface);
+      transition: background .1s;
+    }
+
+    .asset-row:hover { background: var(--surface-2); }
+    .asset-row.active { background: var(--accent-soft); }
+    .asset-row.active::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
+    .asset-check { display: grid; place-items: start center; padding-top: 3px; }
+    .asset-check input { width: 14px; height: 14px; accent-color: var(--accent); cursor: pointer; }
+    .asset-main { min-width: 0; }
+    .asset-name { font-size: 12.8px; font-weight: 710; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 5px; }
+    .asset-meta { display: flex; align-items: center; gap: 6px; min-width: 0; margin-bottom: 5px; }
+    .type-badge { display: inline-flex; align-items: center; gap: 4px; height: 19px; padding: 0 6px; border-radius: 5px; font-size: 9.5px; font-weight: 750; background: var(--surface-3); color: var(--muted); }
+    .type-badge .tiny-icon { width: 10px; height: 10px; display: grid; place-items: center; }
+    .status-dot { width: 5px; height: 5px; border-radius: 50%; background: #5ea77e; }
+    .status-dot.draft { background: #d5a24d; }
+    .status-dot.deprecated { background: #bf6b6b; }
+    .asset-status { color: var(--muted); font-size: 10px; text-transform: capitalize; }
+    .asset-summary { color: var(--muted); font-size: 10.8px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .star { width: 24px; height: 24px; border: 0; border-radius: 6px; background: transparent; color: var(--faint); cursor: pointer; display: grid; place-items: center; }
+    .star:hover { color: #c09239; background: color-mix(in srgb, #d7aa53 12%, transparent); }
+    .star.on { color: #c09239; }
+    .empty-list { padding: 28px 24px; text-align: center; color: var(--muted); font-size: 12px; }
+
+    .workspace {
+      min-width: 0;
+      min-height: 0;
+      background: var(--surface-2);
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      position: relative;
+    }
+
+    .workspace-head {
+      padding: 15px 18px 12px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: minmax(0,1fr) auto;
+      gap: 16px;
+    }
+
+    .crumb { color: var(--muted); font-size: 10.5px; margin-bottom: 7px; display: flex; align-items: center; gap: 6px; }
+    .crumb span { color: var(--text); }
+    .asset-title-line { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .asset-title-input {
+      width: min(620px, 100%);
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      font-size: 19px;
+      font-weight: 760;
+      letter-spacing: -.025em;
+      padding: 0;
+      min-width: 0;
+    }
+    .head-actions { display: flex; align-items: center; gap: 5px; align-self: start; }
+
+    .status-chip {
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      border-radius: 12px;
+      padding: 0 8px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: capitalize;
+      cursor: pointer;
+    }
+
+    .tabs { height: 43px; display: flex; align-items: end; gap: 2px; padding: 0 18px; background: var(--surface); border-bottom: 1px solid var(--line); }
+    .tab { height: 42px; border: 0; border-bottom: 2px solid transparent; background: transparent; padding: 0 12px; cursor: pointer; color: var(--muted); font-size: 11.5px; font-weight: 670; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent-strong); border-bottom-color: var(--accent); }
+
+    .workspace-scroll { min-height: 0; overflow: auto; padding: 18px; }
+    .form-grid { max-width: 980px; display: grid; gap: 15px; }
+    .form-grid.two { grid-template-columns: minmax(0,1fr) minmax(220px,.42fr); align-items: start; }
+    .field { min-width: 0; }
+    .field label, .section-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 10.5px; font-weight: 750; margin-bottom: 7px; }
+    .field label small { color: var(--faint); font-weight: 560; }
+    .input, .textarea, .codearea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 8px;
+      outline: 0;
+      transition: border-color .14s, box-shadow .14s;
+    }
+    .input:focus, .textarea:focus, .codearea:focus { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent); }
+    .input { height: 37px; padding: 0 10px; }
+    .textarea { min-height: 72px; padding: 9px 10px; resize: vertical; line-height: 1.45; }
+    .code-shell { border: 1px solid var(--line); background: var(--surface); border-radius: 9px; overflow: hidden; }
+    .code-toolbar { height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 9px; border-bottom: 1px solid var(--line); background: var(--surface-2); color: var(--muted); font-size: 9.8px; }
+    .codearea { border: 0; border-radius: 0; min-height: 310px; resize: vertical; padding: 14px 15px; font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 12px; line-height: 1.58; background: var(--surface); }
+    .codearea:focus { box-shadow: none; }
+
+    .meta-card, .panel-card {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 9px;
+      padding: 13px;
+    }
+    .meta-card { display: grid; gap: 14px; }
+    .tag-wrap { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag { height: 24px; display: inline-flex; align-items: center; gap: 5px; padding: 0 8px; border-radius: 6px; background: var(--surface-3); color: var(--muted); font-size: 10px; font-weight: 650; }
+    .tag.add { border: 1px dashed var(--line-strong); background: transparent; cursor: pointer; }
+    .tag.add:hover { color: var(--text); border-color: var(--accent); }
+    .kv { display: grid; grid-template-columns: 95px minmax(0,1fr); gap: 8px; font-size: 10.5px; }
+    .kv .k { color: var(--muted); }
+    .kv .v { color: var(--text); overflow-wrap: anywhere; }
+
+    .var-row, .link-row, .history-row, .note-row {
+      display: grid;
+      align-items: center;
+      gap: 9px;
+      min-height: 42px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 11px;
+    }
+    .var-row:last-child, .link-row:last-child, .history-row:last-child, .note-row:last-child { border-bottom: 0; }
+    .var-row { grid-template-columns: 140px 90px minmax(0,1fr) auto; }
+    .link-row { grid-template-columns: 28px minmax(0,1fr) 86px auto; }
+    .history-row { grid-template-columns: 78px minmax(0,1fr) 100px auto; }
+    .note-row { grid-template-columns: minmax(0,1fr) 110px auto; align-items: start; }
+    .row-title { font-weight: 700; }
+    .row-sub { color: var(--muted); font-size: 10px; margin-top: 2px; }
+    .row-action { border: 0; background: transparent; color: var(--accent-strong); font-weight: 700; font-size: 10px; cursor: pointer; }
+    .row-action:hover { text-decoration: underline; }
+    .rel-chip { justify-self: start; height: 21px; display: inline-flex; align-items: center; padding: 0 7px; border-radius: 5px; background: var(--surface-3); color: var(--muted); font-size: 9.5px; }
+    .type-square { width: 27px; height: 27px; display: grid; place-items: center; border: 1px solid var(--line); background: var(--surface-2); border-radius: 7px; color: var(--muted); }
+
+    .setup-grid { max-width: 860px; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+    .setup-grid .wide { grid-column: 1 / -1; }
+    .inline-fields { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px; }
+    .secret-box { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+    .secret-row { display: grid; grid-template-columns: minmax(0,1fr) 120px auto; gap: 8px; align-items: center; min-height: 39px; padding: 6px 9px; border-bottom: 1px solid var(--line); font-size: 10.5px; }
+    .secret-row:last-child { border-bottom: 0; }
+    .secret-value { color: var(--muted); font-family: monospace; }
+
+    .quick-note { display: flex; gap: 7px; }
+    .quick-note .input { flex: 1; }
+    .timeline-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); margin-top: 3px; }
+    .timeline-dot.note { background: var(--accent); }
+    .timeline-dot.version { background: #c99441; }
+
+    .savebar {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 17px;
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+    }
+    .save-state { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 10.5px; }
+    .save-dot { width: 7px; height: 7px; border-radius: 50%; background: #5ba778; }
+    .save-dot.dirty { background: #d2a04e; }
+    .save-actions { display: flex; gap: 6px; }
+
+    .overlay { position: fixed; inset: 0; background: rgba(5,12,14,.36); backdrop-filter: blur(2px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .overlay.open { display: flex; }
+    .modal { width: min(660px, 100%); max-height: min(760px, calc(100vh - 40px)); overflow: auto; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 13px; box-shadow: var(--shadow); }
+    .modal.small { width: min(500px, 100%); }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 17px; border-bottom: 1px solid var(--line); }
+    .modal-title { font-weight: 760; font-size: 15px; letter-spacing: -.015em; }
+    .modal-body { padding: 17px; }
+    .modal-foot { display: flex; align-items: center; justify-content: flex-end; gap: 7px; padding: 12px 17px; border-top: 1px solid var(--line); background: var(--surface-2); border-radius: 0 0 13px 13px; }
+    .icon-close { width: 30px; height: 30px; border: 0; background: transparent; color: var(--muted); border-radius: 7px; cursor: pointer; }
+    .icon-close:hover { background: var(--surface-3); color: var(--text); }
+
+    .type-picker { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 8px; margin-bottom: 18px; }
+    .type-option { min-height: 84px; border: 1px solid var(--line); background: var(--surface-2); border-radius: 9px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; color: var(--muted); font-size: 10.5px; font-weight: 700; }
+    .type-option:hover { border-color: var(--line-strong); color: var(--text); }
+    .type-option.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 10%, transparent); }
+    .type-option svg { width: 21px; height: 21px; }
+
+    .bundle-summary { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-bottom: 13px; }
+    .summary-tile { border: 1px solid var(--line); background: var(--surface-2); border-radius: 8px; padding: 10px; }
+    .summary-number { font-size: 18px; font-weight: 780; }
+    .summary-label { color: var(--muted); font-size: 9.5px; margin-top: 1px; }
+    .bundle-tree { border: 1px solid var(--line); border-radius: 9px; overflow: hidden; margin: 12px 0; }
+    .bundle-row { min-height: 46px; display: grid; grid-template-columns: 22px minmax(0,1fr) auto; gap: 8px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--line); font-size: 11px; }
+    .bundle-row:last-child { border-bottom: 0; }
+    .bundle-row.dependency { padding-left: 35px; background: var(--surface-2); }
+    .bundle-row input { accent-color: var(--accent); }
+    .bundle-type { color: var(--muted); font-size: 9.5px; }
+    .checks { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; margin: 10px 0 15px; }
+    .check { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+    .check input { accent-color: var(--accent); }
+    .security-note { display: flex; gap: 8px; align-items: start; border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--line)); background: var(--accent-soft); color: var(--muted); border-radius: 8px; padding: 10px; font-size: 10.5px; line-height: 1.4; }
+    .security-note svg { width: 15px; height: 15px; color: var(--accent-strong); flex: none; margin-top: 1px; }
+
+    .import-drop { border: 1px dashed var(--line-strong); background: var(--surface-2); border-radius: 10px; min-height: 92px; display: grid; place-items: center; text-align: center; padding: 14px; margin-bottom: 14px; color: var(--muted); font-size: 11px; }
+    .import-drop strong { display: block; color: var(--text); font-size: 12px; margin-bottom: 3px; }
+    .conflict-row { display: grid; grid-template-columns: minmax(0,1fr) 190px; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); align-items: center; }
+    .conflict-row:last-child { border-bottom: 0; }
+    .risk-list { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; color: var(--muted); font-size: 10.5px; }
+    .risk-list li { display: flex; gap: 7px; align-items: start; }
+    .risk-list li::before { content: "•"; color: var(--accent); font-weight: 900; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 300;
+      min-width: 240px;
+      max-width: 560px;
+      padding: 10px 13px;
+      border-radius: 9px;
+      background: var(--sidebar);
+      color: white;
+      box-shadow: var(--shadow);
+      font-size: 11.5px;
+      text-align: center;
+      transition: opacity .18s, transform .18s;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%,0); }
+
+    .drawer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(460px, 92%);
+      z-index: 70;
+      background: var(--surface);
+      border-left: 1px solid var(--line);
+      box-shadow: -18px 0 50px rgba(12,30,34,.14);
+      transform: translateX(102%);
+      transition: transform .2s ease;
+      display: grid;
+      grid-template-rows: auto minmax(0,1fr) auto;
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-head { padding: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+    .drawer-scroll { overflow: auto; padding: 15px; }
+    .drawer-foot { padding: 12px 15px; display: flex; justify-content: flex-end; gap: 7px; border-top: 1px solid var(--line); background: var(--surface-2); }
+
+    .mobile-warning { display: none; }
+
+    @media (max-width: 1120px) {
+      .topbar { grid-template-columns: 190px minmax(230px, 1fr) auto; }
+      .top-spacer { display: none; }
+      .main { grid-template-columns: 190px 310px minmax(430px,1fr); }
+      .brand-sub { display: none; }
+      .form-grid.two { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 850px) {
+      .app { display: none; }
+      .mobile-warning { height: 100vh; display: grid; place-items: center; padding: 30px; text-align: center; background: var(--bg); color: var(--muted); }
+      .mobile-warning strong { color: var(--text); display: block; margin-bottom: 7px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8.5 4.3C9.2 2.9 10.4 2 12 2s2.8.9 3.5 2.3" />
+          <path d="M7.3 7.1C5.9 8.8 5.2 11 5.2 13.5c0 4.7 2.8 7.5 6.8 7.5s6.8-2.8 6.8-7.5c0-2.5-.7-4.7-2.1-6.4" />
+          <path d="M8.2 11.2c1.1-.9 2.4-1.4 3.8-1.4s2.7.5 3.8 1.4" />
+          <circle cx="9.4" cy="7.1" r=".7" fill="currentColor" stroke="none" />
+          <circle cx="14.6" cy="7.1" r=".7" fill="currentColor" stroke="none" />
+          <path d="m11.1 8.2.9.8.9-.8" />
+          <path d="M8.4 20.1 7 22M15.6 20.1 17 22" />
+        </svg>
+      </div>
+      <div>Peng <span class="brand-sub">local library</span></div>
+    </div>
+
+    <label class="global-search" for="globalSearch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="globalSearch" autocomplete="off" placeholder="Search prompts, skills, servers, notes…" />
+      <kbd>Ctrl K</kbd>
+    </label>
+
+    <div class="top-spacer"></div>
+
+    <div class="top-actions">
+      <button class="btn icon quiet" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+      </button>
+      <button class="btn" id="importBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        Import
+      </button>
+      <button class="btn" id="exportBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg>
+        Export <span class="count-pill" id="exportCount">3</span>
+      </button>
+      <button class="btn primary" id="newBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        New
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+    <aside class="sidebar">
+      <div class="side-scroll">
+        <div class="side-label">Library</div>
+        <button class="nav-item active" data-view="all">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span>
+          <span class="nav-name">All items</span><span class="nav-count" data-count="all">8</span>
+        </button>
+        <button class="nav-item" data-view="favourites">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/></svg></span>
+          <span class="nav-name">Favourites</span><span class="nav-count" data-count="favourites">3</span>
+        </button>
+        <button class="nav-item" data-view="recent">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <span class="nav-name">Recent</span><span class="nav-count">6</span>
+        </button>
+        <button class="nav-item" data-view="archived">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16v13H4z"/><path d="M3 4h18v3H3zM9 11h6"/></svg></span>
+          <span class="nav-name">Archived</span><span class="nav-count" data-count="archived">1</span>
+        </button>
+
+        <div class="side-label">Types</div>
+        <button class="nav-item" data-view="prompt"><span class="nav-icon" data-type-icon="prompt"></span><span class="nav-name">Prompts</span><span class="nav-count" data-count="prompt">2</span></button>
+        <button class="nav-item" data-view="skill"><span class="nav-icon" data-type-icon="skill"></span><span class="nav-name">Skills</span><span class="nav-count" data-count="skill">2</span></button>
+        <button class="nav-item" data-view="plugin"><span class="nav-icon" data-type-icon="plugin"></span><span class="nav-name">Plugins</span><span class="nav-count" data-count="plugin">1</span></button>
+        <button class="nav-item" data-view="mcp"><span class="nav-icon" data-type-icon="mcp"></span><span class="nav-name">MCP servers</span><span class="nav-count" data-count="mcp">2</span></button>
+        <button class="nav-item" data-view="subagent"><span class="nav-icon" data-type-icon="subagent"></span><span class="nav-name">Subagents</span><span class="nav-count" data-count="subagent">1</span></button>
+
+        <div class="side-label">Collections</div>
+        <button class="nav-item" data-view="collection:Pegasus"><span class="nav-icon"><span class="collection-dot"></span></span><span class="nav-name">Pegasus</span><span class="nav-count">4</span></button>
+        <button class="nav-item" data-view="collection:Kanmer"><span class="nav-icon"><span class="collection-dot gold"></span></span><span class="nav-name">Kanmer</span><span class="nav-count">3</span></button>
+        <button class="nav-item" data-view="collection:Local LLM"><span class="nav-icon"><span class="collection-dot blue"></span></span><span class="nav-name">Local LLM</span><span class="nav-count">2</span></button>
+        <button class="nav-item" id="addCollection"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></span><span class="nav-name">Collection</span><span></span></button>
+      </div>
+      <div class="side-bottom">
+        <button class="nav-item" id="settingsBtn"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></svg></span><span class="nav-name">Settings</span><span></span></button>
+      </div>
+    </aside>
+
+    <section class="list-panel">
+      <div class="list-heading"><div class="list-title" id="listTitle">All items</div><div class="list-total" id="listTotal">8 items</div></div>
+      <div class="list-toolbar">
+        <select class="mini-select" id="typeFilter" aria-label="Filter by type">
+          <option value="">All types</option><option value="prompt">Prompts</option><option value="skill">Skills</option><option value="plugin">Plugins</option><option value="mcp">MCP servers</option><option value="subagent">Subagents</option>
+        </select>
+        <select class="mini-select" id="statusFilter" aria-label="Filter by status"><option value="">Any status</option><option value="ready">Ready</option><option value="draft">Draft</option><option value="deprecated">Deprecated</option></select>
+        <select class="mini-select" id="sortFilter" aria-label="Sort"><option value="recent">Recent</option><option value="name">Name</option><option value="type">Type</option></select>
+      </div>
+      <div class="list-scroll" id="assetList"></div>
+    </section>
+
+    <section class="workspace">
+      <div class="workspace-head">
+        <div>
+          <div class="crumb"><span id="crumbType">Prompt</span> <span aria-hidden="true">›</span> <span id="crumbCollection">Kanmer</span></div>
+          <div class="asset-title-line">
+            <input class="asset-title-input" id="assetTitle" aria-label="Asset title" />
+            <button class="status-chip" id="statusChip"><span class="status-dot"></span><span>Ready</span></button>
+          </div>
+        </div>
+        <div class="head-actions">
+          <button class="btn icon quiet" id="workspaceStar" title="Favourite" aria-label="Favourite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/></svg></button>
+          <button class="btn icon quiet" id="moreBtn" title="More actions" aria-label="More actions"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></button>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="editor" role="tab">Editor</button>
+        <button class="tab" data-tab="setup" role="tab">Setup</button>
+        <button class="tab" data-tab="links" role="tab">Links</button>
+        <button class="tab" data-tab="notes" role="tab">Notes &amp; history</button>
+      </div>
+
+      <div class="workspace-scroll" id="workspaceBody"></div>
+
+      <div class="savebar">
+        <div class="save-state"><span class="save-dot" id="saveDot"></span><span id="saveText">Saved just now</span></div>
+        <div class="save-actions">
+          <button class="btn" id="copyBtn">Copy</button>
+          <button class="btn" id="versionBtn">Create version</button>
+        </div>
+      </div>
+
+      <aside class="drawer" id="exportDrawer" aria-label="Export drawer">
+        <div class="drawer-head"><div class="modal-title">Create Peng bundle</div><button class="icon-close" data-close-drawer aria-label="Close">✕</button></div>
+        <div class="drawer-scroll" id="drawerContent"></div>
+        <div class="drawer-foot"><button class="btn" data-close-drawer>Cancel</button><button class="btn primary" id="exportConfirm">Export .peng</button></div>
+      </aside>
+    </section>
+  </main>
+</div>
+
+<div class="mobile-warning"><div><strong>Desktop wireframe</strong>Open this prototype in a window at least 850 px wide to view Peng's three-pane desktop layout.</div></div>
+
+<div class="overlay" id="newOverlay" role="dialog" aria-modal="true" aria-labelledby="newTitle">
+  <div class="modal small">
+    <div class="modal-head"><div class="modal-title" id="newTitle">Create asset</div><button class="icon-close" data-close="newOverlay" aria-label="Close">✕</button></div>
+    <div class="modal-body">
+      <div class="type-picker" id="typePicker"></div>
+      <div class="field"><label for="newName">Name</label><input class="input" id="newName" placeholder="Untitled asset" /></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close="newOverlay">Cancel</button><button class="btn primary" id="createAssetBtn">Create</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="importOverlay" role="dialog" aria-modal="true" aria-labelledby="importTitle">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title" id="importTitle">Import review-pack.peng</div><button class="icon-close" data-close="importOverlay" aria-label="Close">✕</button></div>
+    <div class="modal-body">
+      <div class="import-drop"><div><strong>Valid Peng 1.0 bundle</strong>7 assets · 11 files · checksums verified</div></div>
+      <div class="bundle-summary">
+        <div class="summary-tile"><div class="summary-number">4</div><div class="summary-label">New assets</div></div>
+        <div class="summary-tile"><div class="summary-number">2</div><div class="summary-label">Updates</div></div>
+        <div class="summary-tile"><div class="summary-number">1</div><div class="summary-label">Conflict</div></div>
+      </div>
+      <div class="conflict-row"><div><div class="row-title">PR merge-readiness reviewer</div><div class="row-sub">Same ID · newer version</div></div><select class="mini-select"><option>Import as new version</option><option>Skip</option><option>Duplicate</option></select></div>
+      <div class="conflict-row"><div><div class="row-title">Filesystem MCP</div><div class="row-sub">Same ID · divergent content</div></div><select class="mini-select"><option>Review difference</option><option>Duplicate with new ID</option><option>Skip</option></select></div>
+      <div class="section-title" style="margin-top:16px">Security</div>
+      <ul class="risk-list"><li>Contains executable launch definitions; none will be run during import.</li><li>Secret values are absent; 3 local references need mapping.</li><li>No unsafe archive paths or excessive compression ratios detected.</li></ul>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close="importOverlay">Cancel</button><button class="btn primary" id="importConfirm">Import 6 · Skip 1</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+  const icons = {
+    prompt: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5h14v11H9l-4 3V5Z"/><path d="M8 9h8M8 12h5"/></svg>`,
+    skill: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m13 2-8 12h7l-1 8 8-12h-7l1-8Z"/></svg>`,
+    plugin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3h5v4a2 2 0 1 0 4 0V3h4v6h-3a2 2 0 1 0 0 4h3v8h-7v-3a2 2 0 1 0-4 0v3H3v-7h3a2 2 0 1 0 0-4H3V3h5Z"/></svg>`,
+    mcp: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="m8.1 7.3 2.7 8.3M15.9 7.3l-2.7 8.3M8.5 6h7"/></svg>`,
+    subagent: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="7" width="14" height="12" rx="3"/><path d="M9 12h.01M15 12h.01M9 16h6M12 3v4M3 11h2M19 11h2"/></svg>`
+  };
+
+  const typeLabels = { prompt: 'Prompt', skill: 'Skill', plugin: 'Plugin', mcp: 'MCP server', subagent: 'Subagent' };
+
+  let assets = [
+    {
+      id: 'p1', type: 'prompt', name: 'PR merge-readiness reviewer', summary: 'Finds genuine blockers without review churn.', status: 'ready', favourite: true, selected: true, modified: 8,
+      collections: ['Kanmer'], tags: ['review', 'github', 'coding'],
+      body: `You are reviewing a pull request for genuine merge blockers.\n\nScope\n- Repository: {{repository}}\n- Pull request: {{pull_request}}\n- Intended behaviour: {{intent}}\n\nReview the implementation itself. Distinguish concrete correctness, security, data-loss, and workflow defects from style preferences or speculative hardening.\n\nReturn\n1. Merge decision\n2. Genuine blockers, each with evidence\n3. Non-blocking observations\n4. The smallest concrete fixes required`,
+      setup: { format: 'Markdown', variables: ['repository', 'pull_request', 'intent'], compatibility: 'Codex · Claude Code · OpenCode' },
+      links: [
+        { id: 'a1', relation: 'uses' }, { id: 's1', relation: 'requires' }
+      ]
+    },
+    {
+      id: 's1', type: 'skill', name: 'Repository research', summary: 'Evidence-led repository exploration before implementation.', status: 'ready', favourite: true, selected: true, modified: 19,
+      collections: ['Kanmer', 'Pegasus'], tags: ['research', 'repository'],
+      body: `# Repository research\n\nInspect the current implementation before planning changes. Establish the relevant entry points, data flow, tests, recent decisions, and open work. Cite concrete files and symbols. Separate verified facts from inferences.`,
+      setup: { entry: 'SKILL.md', tools: 'GitHub · filesystem · terminal', files: '6 supporting files' },
+      links: [{ id: 'm1', relation: 'requires' }]
+    },
+    {
+      id: 'm1', type: 'mcp', name: 'GitHub MCP', summary: 'Repository, pull request, issue, and review access.', status: 'ready', favourite: false, selected: true, modified: 31,
+      collections: ['Kanmer', 'Pegasus'], tags: ['github', 'mcp'],
+      body: `Stores the canonical configuration and documentation for the GitHub MCP server. Secret values remain local references and are never placed in ordinary exports.`,
+      setup: { transport: 'stdio', command: 'npx', args: '-y @modelcontextprotocol/server-github', cwd: '', secrets: ['GITHUB_TOKEN'], capabilities: 'Tools · Resources' },
+      links: []
+    },
+    {
+      id: 'a1', type: 'subagent', name: 'Review coordinator', summary: 'Coordinates focused reviewers and produces one merge decision.', status: 'draft', favourite: false, selected: false, modified: 44,
+      collections: ['Kanmer'], tags: ['agent', 'review'],
+      body: `You coordinate repository review. Delegate only when a separate evidence stream materially improves the decision. Reconcile findings, remove duplicates, and return one concrete merge recommendation.`,
+      setup: { model: 'Host default', effort: 'High', tools: 'GitHub MCP · filesystem', handoff: 'Return evidence and final decision' },
+      links: [{ id: 's1', relation: 'requires' }, { id: 'm1', relation: 'requires' }, { id: 'p1', relation: 'uses' }]
+    },
+    {
+      id: 'm2', type: 'mcp', name: 'Filesystem MCP', summary: 'Scoped local file search and editing.', status: 'ready', favourite: true, selected: false, modified: 67,
+      collections: ['Local LLM'], tags: ['filesystem', 'mcp'],
+      body: `A least-privilege local filesystem server configuration. Roots are supplied per deployment target rather than embedded as machine-specific canonical paths.`,
+      setup: { transport: 'stdio', command: 'npx', args: '-y @modelcontextprotocol/server-filesystem ${ROOT}', cwd: '', secrets: [], capabilities: 'Resources · Tools' },
+      links: []
+    },
+    {
+      id: 'pl1', type: 'plugin', name: 'Codex global toolkit', summary: 'Projects canonical Peng assets into a global Codex plugin.', status: 'ready', favourite: false, selected: false, modified: 86,
+      collections: ['Kanmer'], tags: ['codex', 'plugin'],
+      body: `Canonical plugin descriptor. The Codex adapter renders host-specific metadata and skill directories from linked Peng assets.`,
+      setup: { target: 'Codex', scope: 'Global', source: 'Local canonical bundle', compatibility: 'Current stable host' },
+      links: [{ id: 's1', relation: 'uses' }, { id: 'p1', relation: 'uses' }]
+    },
+    {
+      id: 'p2', type: 'prompt', name: 'Vehicle lookup reconciliation', summary: 'Reconciles provider suggestions against accepted case fields.', status: 'ready', favourite: false, selected: false, modified: 113,
+      collections: ['Pegasus'], tags: ['vehicle', 'reconciliation'],
+      body: `Compare provider lookup output with the current vehicle record. Present suggested changes field by field. Never overwrite accepted values without explicit approval.`,
+      setup: { format: 'Markdown', variables: ['current_vehicle', 'provider_result'], compatibility: 'General' },
+      links: []
+    },
+    {
+      id: 's2', type: 'skill', name: 'Legacy API migration', summary: 'Archived workflow for compatibility-preserving migrations.', status: 'deprecated', favourite: false, selected: false, modified: 970,
+      collections: ['Pegasus'], tags: ['migration', 'legacy'], archived: true,
+      body: `This workflow is retained for historical reference. New development should not introduce compatibility layers unless a real released interface requires them.`,
+      setup: { entry: 'SKILL.md', tools: 'repository', files: '1 file' },
+      links: []
+    }
+  ];
+
+  let state = { view: 'all', selectedId: 'p1', tab: 'editor', newType: 'prompt', dirty: false };
+  const $ = (q, root = document) => root.querySelector(q);
+  const $$ = (q, root = document) => [...root.querySelectorAll(q)];
+  const escapeHtml = (s='') => s.replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const selectedAsset = () => assets.find(a => a.id === state.selectedId) || assets[0];
+
+  function showToast(message) {
+    const t = $('#toast'); t.textContent = message; t.classList.add('show');
+    clearTimeout(showToast.timer); showToast.timer = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  function filteredAssets() {
+    const query = $('#globalSearch').value.trim().toLowerCase();
+    const type = $('#typeFilter').value;
+    const status = $('#statusFilter').value;
+    let list = assets.filter(a => {
+      if (state.view === 'favourites' && !a.favourite) return false;
+      if (state.view === 'archived' && !a.archived) return false;
+      if (state.view !== 'archived' && state.view !== 'all' && state.view !== 'favourites' && state.view !== 'recent' && state.view.startsWith('collection:') && !a.collections.includes(state.view.split(':')[1])) return false;
+      if (['prompt','skill','plugin','mcp','subagent'].includes(state.view) && a.type !== state.view) return false;
+      if (state.view !== 'archived' && a.archived) return false;
+      if (type && a.type !== type) return false;
+      if (status && a.status !== status) return false;
+      if (query) {
+        const hay = [a.name, a.summary, a.body, ...(a.tags || [])].join(' ').toLowerCase();
+        if (!hay.includes(query)) return false;
+      }
+      return true;
+    });
+    const sort = $('#sortFilter').value;
+    if (sort === 'name') list.sort((a,b) => a.name.localeCompare(b.name));
+    else if (sort === 'type') list.sort((a,b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
+    else list.sort((a,b) => a.modified - b.modified);
+    return list;
+  }
+
+  function updateCounts() {
+    const active = assets.filter(a => !a.archived);
+    $$('[data-count]').forEach(el => {
+      const k = el.dataset.count;
+      let n = active.length;
+      if (k === 'favourites') n = active.filter(a => a.favourite).length;
+      else if (k === 'archived') n = assets.filter(a => a.archived).length;
+      else if (k !== 'all') n = active.filter(a => a.type === k).length;
+      el.textContent = n;
+    });
+    const exportN = assets.filter(a => a.selected).length;
+    $('#exportCount').textContent = exportN;
+  }
+
+  function viewTitle() {
+    const names = { all: 'All items', favourites: 'Favourites', recent: 'Recent', archived: 'Archived', prompt: 'Prompts', skill: 'Skills', plugin: 'Plugins', mcp: 'MCP servers', subagent: 'Subagents' };
+    return state.view.startsWith('collection:') ? state.view.split(':')[1] : (names[state.view] || 'All items');
+  }
+
+  function renderList() {
+    const list = filteredAssets();
+    $('#listTitle').textContent = viewTitle();
+    $('#listTotal').textContent = `${list.length} item${list.length === 1 ? '' : 's'}`;
+    const root = $('#assetList');
+    if (!list.length) {
+      root.innerHTML = `<div class="empty-list">No matching assets.<br><button class="btn" style="margin-top:12px" onclick="document.getElementById('newBtn').click()">Create asset</button></div>`;
+      return;
+    }
+    root.innerHTML = list.map(a => `
+      <div class="asset-row ${a.id === state.selectedId ? 'active' : ''}" data-id="${a.id}" tabindex="0">
+        <div class="asset-check"><input type="checkbox" ${a.selected ? 'checked' : ''} aria-label="Add ${escapeHtml(a.name)} to export" data-select="${a.id}"></div>
+        <div class="asset-main">
+          <div class="asset-name">${escapeHtml(a.name)}</div>
+          <div class="asset-meta"><span class="type-badge"><span class="tiny-icon">${icons[a.type]}</span>${typeLabels[a.type]}</span><span class="status-dot ${a.status}"></span><span class="asset-status">${a.status}</span>${a.links.length ? `<span class="asset-status">· ${a.links.length} link${a.links.length === 1 ? '' : 's'}</span>` : ''}</div>
+          <div class="asset-summary">${escapeHtml(a.summary)}</div>
+        </div>
+        <button class="star ${a.favourite ? 'on' : ''}" data-star="${a.id}" aria-label="Favourite">${a.favourite ? '★' : '☆'}</button>
+      </div>`).join('');
+
+    $$('.asset-row', root).forEach(row => {
+      row.addEventListener('click', e => {
+        if (e.target.closest('input') || e.target.closest('button')) return;
+        state.selectedId = row.dataset.id; state.tab = 'editor'; renderAll();
+      });
+      row.addEventListener('keydown', e => { if (e.key === 'Enter') { state.selectedId = row.dataset.id; state.tab = 'editor'; renderAll(); } });
+    });
+    $$('[data-select]', root).forEach(box => box.addEventListener('change', e => {
+      const a = assets.find(x => x.id === box.dataset.select); a.selected = box.checked; updateCounts();
+    }));
+    $$('[data-star]', root).forEach(btn => btn.addEventListener('click', e => {
+      e.stopPropagation(); const a = assets.find(x => x.id === btn.dataset.star); a.favourite = !a.favourite; renderAll();
+    }));
+  }
+
+  function renderHeader() {
+    const a = selectedAsset();
+    $('#crumbType').textContent = typeLabels[a.type];
+    $('#crumbCollection').textContent = a.collections[0] || 'Library';
+    $('#assetTitle').value = a.name;
+    const chip = $('#statusChip');
+    chip.innerHTML = `<span class="status-dot ${a.status}"></span><span>${a.status}</span>`;
+    $('#workspaceStar').style.color = a.favourite ? '#c09239' : '';
+    $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === state.tab));
+  }
+
+  function editorHtml(a) {
+    const setup = a.setup || {};
+    let secondary = '';
+    if (a.type === 'prompt') {
+      secondary = `<div class="panel-card"><div class="section-title">Variables <button class="row-action">+ Add</button></div>${(setup.variables || []).map((v,i) => `<div class="var-row"><div class="row-title">{{${escapeHtml(v)}}}</div><div class="rel-chip">${i === 0 ? 'Required' : 'Optional'}</div><div class="row-sub">${i === 0 ? 'Primary target' : 'Template input'}</div><button class="row-action">Edit</button></div>`).join('') || '<div class="row-sub">No variables</div>'}</div>`;
+    } else if (a.type === 'skill') {
+      secondary = `<div class="panel-card"><div class="section-title">Skill files <button class="row-action">+ Add file</button></div><div class="link-row"><div class="type-square">#</div><div><div class="row-title">${escapeHtml(setup.entry || 'SKILL.md')}</div><div class="row-sub">Entry instructions</div></div><span class="rel-chip">Markdown</span><button class="row-action">Open</button></div><div class="link-row"><div class="type-square">···</div><div><div class="row-title">Supporting files</div><div class="row-sub">${escapeHtml(setup.files || 'None')}</div></div><span class="rel-chip">Managed</span><button class="row-action">Browse</button></div></div>`;
+    } else if (a.type === 'mcp') {
+      secondary = `<div class="panel-card"><div class="section-title">Connection</div><div class="kv"><div class="k">Transport</div><div class="v">${escapeHtml(setup.transport || '')}</div></div><div class="kv"><div class="k">Command</div><div class="v"><code>${escapeHtml(setup.command || '')}</code></div></div><div class="kv"><div class="k">Secret refs</div><div class="v">${(setup.secrets || []).map(s => `<span class="tag">${escapeHtml(s)}</span>`).join('') || 'None'}</div></div></div>`;
+    } else if (a.type === 'subagent') {
+      secondary = `<div class="panel-card"><div class="section-title">Agent profile</div><div class="kv"><div class="k">Model</div><div class="v">${escapeHtml(setup.model || '')}</div></div><div class="kv"><div class="k">Effort</div><div class="v">${escapeHtml(setup.effort || '')}</div></div><div class="kv"><div class="k">Tools</div><div class="v">${escapeHtml(setup.tools || '')}</div></div></div>`;
+    } else {
+      secondary = `<div class="panel-card"><div class="section-title">Plugin target</div><div class="kv"><div class="k">Host</div><div class="v">${escapeHtml(setup.target || '')}</div></div><div class="kv"><div class="k">Scope</div><div class="v">${escapeHtml(setup.scope || '')}</div></div><div class="kv"><div class="k">Source</div><div class="v">${escapeHtml(setup.source || '')}</div></div></div>`;
+    }
+
+    return `<div class="form-grid two">
+      <div class="form-grid">
+        <div class="field"><label for="summaryInput">Summary <small>shown in search results</small></label><textarea class="textarea" id="summaryInput">${escapeHtml(a.summary)}</textarea></div>
+        <div class="field"><label>Main content <small>${a.type === 'prompt' ? 'Markdown · variables highlighted in the final editor' : 'Markdown / structured text'}</small></label><div class="code-shell"><div class="code-toolbar"><span>${a.type === 'mcp' ? 'README.md' : a.type === 'skill' ? (a.setup.entry || 'SKILL.md') : 'content.md'}</span><span>${a.body.length.toLocaleString()} characters</span></div><textarea class="codearea" id="bodyInput" spellcheck="false">${escapeHtml(a.body)}</textarea></div></div>
+        ${secondary}
+      </div>
+      <aside class="meta-card">
+        <div><div class="section-title">Tags</div><div class="tag-wrap">${a.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}<button class="tag add">+ Add</button></div></div>
+        <div><div class="section-title">Details</div><div class="kv"><div class="k">Type</div><div class="v">${typeLabels[a.type]}</div></div><div class="kv"><div class="k">Collection</div><div class="v">${a.collections.join(' · ') || 'None'}</div></div><div class="kv"><div class="k">Updated</div><div class="v">${a.modified} minutes ago</div></div><div class="kv"><div class="k">Revision</div><div class="v">Working draft · v3 snapshot</div></div></div>
+        <div><div class="section-title">Compatibility</div><div class="tag-wrap">${escapeHtml(a.setup.compatibility || a.setup.target || 'General').split(' · ').map(x => `<span class="tag">${x}</span>`).join('')}</div></div>
+      </aside>
+    </div>`;
+  }
+
+  function setupHtml(a) {
+    const s = a.setup || {};
+    if (a.type === 'mcp') {
+      return `<div class="setup-grid">
+        <div class="field"><label>Transport</label><select class="input"><option ${s.transport === 'stdio' ? 'selected' : ''}>stdio</option><option>Streamable HTTP</option><option>Custom</option></select></div>
+        <div class="field"><label>Capabilities</label><input class="input" value="${escapeHtml(s.capabilities || '')}"></div>
+        <div class="field"><label>Command</label><input class="input" value="${escapeHtml(s.command || '')}"></div>
+        <div class="field"><label>Working directory <small>resolved per deployment</small></label><input class="input" placeholder="Optional"></div>
+        <div class="field wide"><label>Arguments <small>one argument per line in the real editor</small></label><textarea class="textarea">${escapeHtml(s.args || '')}</textarea></div>
+        <div class="field wide"><label>Environment references <small>values remain local</small></label><div class="secret-box">${(s.secrets || []).map(x => `<div class="secret-row"><strong>${escapeHtml(x)}</strong><span class="secret-value">PENG_SECRET</span><button class="row-action">Map</button></div>`).join('') || '<div class="secret-row"><span class="row-sub">No secret references</span><span></span><button class="row-action">+ Add</button></div>'}</div></div>
+        <div class="field wide"><div class="security-note">${infoIcon()}<div>Checking or launching a server is a separate explicit action. Importing or opening this record never runs its command.</div></div></div>
+      </div>`;
+    }
+    if (a.type === 'prompt') {
+      return `<div class="setup-grid"><div class="field"><label>Content format</label><select class="input"><option>Markdown</option><option>Plain text</option><option>JSON</option></select></div><div class="field"><label>Output format</label><input class="input" placeholder="Optional"></div><div class="field wide"><label>Compatible hosts/models</label><input class="input" value="${escapeHtml(s.compatibility || '')}"></div><div class="field wide"><label>Test input</label><textarea class="textarea" placeholder="Optional example input"></textarea></div><div class="field wide"><label>Expected properties</label><textarea class="textarea" placeholder="What a good response must contain"></textarea></div></div>`;
+    }
+    if (a.type === 'skill') {
+      return `<div class="setup-grid"><div class="field"><label>Entry file</label><input class="input" value="${escapeHtml(s.entry || 'SKILL.md')}"></div><div class="field"><label>Install scope</label><select class="input"><option>Either</option><option>Global</option><option>Workspace</option></select></div><div class="field wide"><label>When to use</label><textarea class="textarea" placeholder="Trigger description">Use for evidence-led repository exploration before implementation.</textarea></div><div class="field wide"><label>Tool requirements</label><input class="input" value="${escapeHtml(s.tools || '')}"></div></div>`;
+    }
+    if (a.type === 'plugin') {
+      return `<div class="setup-grid"><div class="field"><label>Target family</label><input class="input" value="${escapeHtml(s.target || 'Generic')}"></div><div class="field"><label>Install scope</label><select class="input"><option>${escapeHtml(s.scope || 'Either')}</option><option>Global</option><option>Workspace</option></select></div><div class="field wide"><label>Source</label><input class="input" value="${escapeHtml(s.source || '')}"></div><div class="field wide"><label>Canonical manifest</label><textarea class="codearea" style="min-height:230px">name: ${escapeHtml(a.name)}\ntarget: ${escapeHtml(s.target || 'generic')}\nassets:\n  - repository-research\n  - pr-merge-readiness-reviewer</textarea></div></div>`;
+    }
+    return `<div class="setup-grid"><div class="field"><label>Preferred model</label><input class="input" value="${escapeHtml(s.model || '')}"></div><div class="field"><label>Reasoning effort</label><select class="input"><option>${escapeHtml(s.effort || 'Host default')}</option><option>Low</option><option>Medium</option><option>High</option></select></div><div class="field wide"><label>Allowed tools</label><input class="input" value="${escapeHtml(s.tools || '')}"></div><div class="field wide"><label>Handoff contract</label><textarea class="textarea">${escapeHtml(s.handoff || '')}</textarea></div><div class="field wide"><label>Constraints</label><textarea class="textarea" placeholder="Filesystem, network, or action constraints"></textarea></div></div>`;
+  }
+
+  function linksHtml(a) {
+    const outgoing = (a.links || []).map(link => ({...link, asset: assets.find(x => x.id === link.id)})).filter(x => x.asset);
+    const incoming = assets.flatMap(source => (source.links || []).filter(l => l.id === a.id).map(l => ({ source, relation: l.relation })));
+    return `<div class="form-grid" style="max-width:860px">
+      <div class="panel-card"><div class="section-title">Dependencies <button class="row-action">+ Link asset</button></div>${outgoing.length ? outgoing.map(x => linkRow(x.asset, x.relation)).join('') : '<div class="row-sub">No outgoing links</div>'}</div>
+      <div class="panel-card"><div class="section-title">Used by</div>${incoming.length ? incoming.map(x => linkRow(x.source, x.relation)).join('') : '<div class="row-sub">No dependants</div>'}</div>
+      <div class="security-note">${infoIcon()}<div><strong>Required</strong> and <strong>extends</strong> links are included automatically when this asset is exported. Optional and informational links are shown for selection.</div></div>
+    </div>`;
+  }
+
+  function linkRow(asset, relation) {
+    return `<div class="link-row"><div class="type-square">${icons[asset.type]}</div><div><div class="row-title">${escapeHtml(asset.name)}</div><div class="row-sub">${typeLabels[asset.type]} · ${escapeHtml(asset.summary)}</div></div><span class="rel-chip">${escapeHtml(relation)}</span><button class="row-action" data-open-link="${asset.id}">Open</button></div>`;
+  }
+
+  function notesHtml(a) {
+    return `<div class="form-grid" style="max-width:860px">
+      <div><div class="section-title">Add note</div><div class="quick-note"><input class="input" id="noteInput" placeholder="Record a decision, result, or reminder…"><button class="btn primary" id="addNoteBtn">Add note</button></div></div>
+      <div class="panel-card"><div class="section-title">Timeline <span style="font-weight:560">Notes and meaningful actions only</span></div>
+        <div class="note-row"><div style="display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px"><span class="timeline-dot note"></span><div><div class="row-title">Use this prompt after implementation, not during planning.</div><div class="row-sub">Pinned note</div></div></div><div class="row-sub">Today · 14:42</div><button class="row-action">•••</button></div>
+        <div class="note-row"><div style="display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px"><span class="timeline-dot version"></span><div><div class="row-title">Version 3 created</div><div class="row-sub">Separated blockers from non-blocking observations.</div></div></div><div class="row-sub">Yesterday</div><button class="row-action">Compare</button></div>
+        <div class="note-row"><div style="display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px"><span class="timeline-dot"></span><div><div class="row-title">Exported in review-pack-2026-08.peng</div><div class="row-sub">Current version · notes included</div></div></div><div class="row-sub">28 Aug 2026</div><button class="row-action">Receipt</button></div>
+        <div class="note-row"><div style="display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px"><span class="timeline-dot"></span><div><div class="row-title">Asset created</div><div class="row-sub">Local source</div></div></div><div class="row-sub">19 Aug 2026</div><span></span></div>
+      </div>
+      <div class="panel-card"><div class="section-title">Versions <button class="row-action">Create version</button></div>
+        <div class="history-row"><strong>v3</strong><div><div class="row-title">Current snapshot</div><div class="row-sub">SHA-256 · 3 linked assets</div></div><span class="row-sub">Yesterday</span><button class="row-action">Open</button></div>
+        <div class="history-row"><strong>v2</strong><div><div class="row-title">Review output cleanup</div><div class="row-sub">SHA-256</div></div><span class="row-sub">24 Aug</span><button class="row-action">Compare</button></div>
+        <div class="history-row"><strong>v1</strong><div><div class="row-title">Initial version</div><div class="row-sub">SHA-256</div></div><span class="row-sub">19 Aug</span><button class="row-action">Compare</button></div>
+      </div>
+    </div>`;
+  }
+
+  function infoIcon() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg>`; }
+
+  function renderWorkspace() {
+    const a = selectedAsset();
+    let html = state.tab === 'editor' ? editorHtml(a) : state.tab === 'setup' ? setupHtml(a) : state.tab === 'links' ? linksHtml(a) : notesHtml(a);
+    $('#workspaceBody').innerHTML = html;
+    if (state.tab === 'editor') {
+      $('#summaryInput')?.addEventListener('input', e => { a.summary = e.target.value; markDirty(); renderList(); });
+      $('#bodyInput')?.addEventListener('input', e => { a.body = e.target.value; markDirty(); });
+    }
+    $$('[data-open-link]').forEach(btn => btn.addEventListener('click', () => { state.selectedId = btn.dataset.openLink; state.tab = 'editor'; renderAll(); }));
+    $('#addNoteBtn')?.addEventListener('click', () => {
+      const input = $('#noteInput'); if (!input.value.trim()) return; showToast('Note added to the timeline'); input.value = '';
+    });
+  }
+
+  function markDirty() {
+    state.dirty = true; $('#saveDot').classList.add('dirty'); $('#saveText').textContent = 'Saving…';
+    clearTimeout(markDirty.timer); markDirty.timer = setTimeout(() => { state.dirty = false; $('#saveDot').classList.remove('dirty'); $('#saveText').textContent = 'Saved just now'; }, 700);
+  }
+
+  function renderAll() { updateCounts(); renderList(); renderHeader(); renderWorkspace(); }
+
+  function renderTypePicker() {
+    $('#typePicker').innerHTML = Object.keys(typeLabels).map(t => `<button class="type-option ${state.newType === t ? 'active' : ''}" data-new-type="${t}">${icons[t]}<span>${typeLabels[t]}</span></button>`).join('');
+    $$('[data-new-type]').forEach(btn => btn.addEventListener('click', () => { state.newType = btn.dataset.newType; renderTypePicker(); }));
+  }
+
+  function dependencyClosure(selected) {
+    const result = new Map(selected.map(a => [a.id, { asset: a, root: true, relation: 'selected' }]));
+    const queue = [...selected];
+    while (queue.length) {
+      const a = queue.shift();
+      (a.links || []).filter(l => ['requires','extends'].includes(l.relation)).forEach(l => {
+        const dep = assets.find(x => x.id === l.id);
+        if (dep && !result.has(dep.id)) { result.set(dep.id, { asset: dep, root: false, relation: l.relation }); queue.push(dep); }
+      });
+    }
+    return [...result.values()];
+  }
+
+  function renderDrawer() {
+    const chosen = assets.filter(a => a.selected);
+    const closure = dependencyClosure(chosen);
+    const deps = closure.filter(x => !x.root);
+    $('#drawerContent').innerHTML = `
+      <div class="bundle-summary"><div class="summary-tile"><div class="summary-number">${chosen.length}</div><div class="summary-label">Selected</div></div><div class="summary-tile"><div class="summary-number">${deps.length}</div><div class="summary-label">Required dependencies</div></div><div class="summary-tile"><div class="summary-number">${closure.reduce((n,x)=>n+(x.asset.links?.length||0),0)}</div><div class="summary-label">Relationships</div></div></div>
+      <div class="bundle-tree">${closure.length ? closure.map(x => `<div class="bundle-row ${x.root ? '' : 'dependency'}"><input type="checkbox" checked ${x.root ? '' : 'disabled'}><div><div class="row-title">${x.root ? '' : '↳ '}${escapeHtml(x.asset.name)}</div><div class="row-sub">${typeLabels[x.asset.type]}${x.root ? '' : ` · ${x.relation}`}</div></div><span class="bundle-type">${x.root ? 'Selected' : 'Required'}</span></div>`).join('') : '<div class="bundle-row"><span></span><div class="row-sub">Select assets from the list first.</div><span></span></div>'}</div>
+      <div class="section-title">Include</div>
+      <div class="checks"><label class="check"><input type="checkbox" checked>Current versions</label><label class="check"><input type="checkbox" checked>Attachments</label><label class="check"><input type="checkbox">Version history</label><label class="check"><input type="checkbox" checked>Notes</label><label class="check"><input type="checkbox">Activity log</label><label class="check"><input type="checkbox" checked>Collections</label></div>
+      <div class="field" style="margin-bottom:12px"><label>Bundle name</label><input class="input" value="review-pack-2026-09"></div>
+      <div class="security-note">${infoIcon()}<div>Secret values are excluded. References remain as placeholders and must be mapped on the destination machine.</div></div>`;
+  }
+
+  function openOverlay(id) { $('#' + id).classList.add('open'); }
+  function closeOverlay(id) { $('#' + id).classList.remove('open'); }
+
+  $$('[data-type-icon]').forEach(el => el.innerHTML = icons[el.dataset.typeIcon]);
+  renderTypePicker();
+
+  $$('.nav-item[data-view]').forEach(btn => btn.addEventListener('click', () => {
+    state.view = btn.dataset.view;
+    $$('.nav-item[data-view]').forEach(x => x.classList.toggle('active', x === btn));
+    renderList();
+  }));
+
+  $('#globalSearch').addEventListener('input', renderList);
+  $('#typeFilter').addEventListener('change', renderList);
+  $('#statusFilter').addEventListener('change', renderList);
+  $('#sortFilter').addEventListener('change', renderList);
+
+  $$('.tab').forEach(tab => tab.addEventListener('click', () => { state.tab = tab.dataset.tab; renderHeader(); renderWorkspace(); }));
+
+  $('#assetTitle').addEventListener('input', e => { selectedAsset().name = e.target.value; markDirty(); renderList(); });
+  $('#workspaceStar').addEventListener('click', () => { selectedAsset().favourite = !selectedAsset().favourite; renderAll(); });
+  $('#statusChip').addEventListener('click', () => {
+    const a = selectedAsset(); const order = ['draft','ready','deprecated']; a.status = order[(order.indexOf(a.status)+1)%order.length]; markDirty(); renderAll();
+  });
+
+  $('#newBtn').addEventListener('click', () => { $('#newName').value = ''; state.newType = 'prompt'; renderTypePicker(); openOverlay('newOverlay'); setTimeout(() => $('#newName').focus(), 60); });
+  $('#importBtn').addEventListener('click', () => openOverlay('importOverlay'));
+  $('#exportBtn').addEventListener('click', () => { renderDrawer(); $('#exportDrawer').classList.add('open'); });
+  $$('[data-close-drawer]').forEach(b => b.addEventListener('click', () => $('#exportDrawer').classList.remove('open')));
+  $$('[data-close]').forEach(b => b.addEventListener('click', () => closeOverlay(b.dataset.close)));
+  $$('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+
+  $('#createAssetBtn').addEventListener('click', () => {
+    const name = $('#newName').value.trim() || `Untitled ${typeLabels[state.newType].toLowerCase()}`;
+    const id = `${state.newType}-${Date.now()}`;
+    const setupByType = {
+      prompt: { format: 'Markdown', variables: [], compatibility: 'General' },
+      skill: { entry: 'SKILL.md', tools: '', files: '1 file' },
+      plugin: { target: 'Generic', scope: 'Either', source: '' },
+      mcp: { transport: 'stdio', command: '', args: '', secrets: [], capabilities: '' },
+      subagent: { model: 'Host default', effort: 'Host default', tools: '', handoff: '' }
+    };
+    assets.unshift({ id, type: state.newType, name, summary: '', status: 'draft', favourite: false, selected: false, modified: 0, collections: [], tags: [], body: '', setup: setupByType[state.newType], links: [] });
+    state.selectedId = id; state.view = 'all'; state.tab = 'editor';
+    $$('.nav-item[data-view]').forEach(x => x.classList.toggle('active', x.dataset.view === 'all'));
+    closeOverlay('newOverlay'); renderAll(); showToast(`${typeLabels[state.newType]} created`);
+  });
+
+  $('#importConfirm').addEventListener('click', () => { closeOverlay('importOverlay'); showToast('Wireframe: 6 assets would be imported transactionally'); });
+  $('#exportConfirm').addEventListener('click', () => { $('#exportDrawer').classList.remove('open'); showToast('Wireframe: review-pack-2026-09.peng would be created'); });
+  $('#versionBtn').addEventListener('click', () => showToast('Version snapshot created'));
+  $('#copyBtn').addEventListener('click', async () => { try { await navigator.clipboard.writeText(selectedAsset().body); showToast('Content copied'); } catch { showToast('Copy is unavailable in this browser context'); } });
+  $('#settingsBtn').addEventListener('click', () => showToast('Settings would open as a compact preferences view'));
+  $('#addCollection').addEventListener('click', () => showToast('Create collection'));
+  $('#moreBtn').addEventListener('click', () => showToast('Duplicate · Archive · Delete · View raw data'));
+
+  $('#themeBtn').addEventListener('click', () => {
+    const root = document.documentElement; root.dataset.theme = root.dataset.theme === 'dark' ? '' : 'dark';
+  });
+
+  document.addEventListener('keydown', e => {
+    const meta = e.ctrlKey || e.metaKey;
+    if (meta && e.key.toLowerCase() === 'k') { e.preventDefault(); $('#globalSearch').focus(); }
+    if (meta && e.key.toLowerCase() === 'n') { e.preventDefault(); $('#newBtn').click(); }
+    if (meta && e.key.toLowerCase() === 'e') { e.preventDefault(); $('#exportBtn').click(); }
+    if (meta && e.key.toLowerCase() === 'i') { e.preventDefault(); $('#importBtn').click(); }
+    if (meta && e.shiftKey && e.key.toLowerCase() === 's') { e.preventDefault(); $('#versionBtn').click(); }
+    if (e.key === 'Escape') { $$('.overlay.open').forEach(o => o.classList.remove('open')); $('#exportDrawer').classList.remove('open'); }
+    if (e.altKey && ['1','2','3','4'].includes(e.key)) { e.preventDefault(); const tabs=['editor','setup','links','notes']; state.tab=tabs[Number(e.key)-1]; renderHeader(); renderWorkspace(); }
+  });
+
+  renderAll();
+</script>
+</body>
+</html>
