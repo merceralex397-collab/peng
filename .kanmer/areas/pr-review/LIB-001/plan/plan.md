@@ -85,7 +85,7 @@ No governing document is modified and no new ADR is required.
 - Forbidden: separate Prompt aggregate, five per-type models, compatibility aliases, bundle execution semantics, persistence code, or invented domain fixtures.
 - Negative cases: malformed UUID/type/schema version, blank or oversized fields, duplicate/invalid tags, non-object type data, and invalid revisions return field-specific validation errors without panics.
 - Tests: colocated unit tests in `src-tauri/src/domain/asset.rs` and `src-tauri/src/domain/error.rs`.
-- Commands: `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check`; `cargo test --manifest-path src-tauri/Cargo.toml domain`.
+- Commands: `rustfmt --edition 2024 --check src-tauri/src/domain/mod.rs src-tauri/src/domain/asset.rs src-tauri/src/domain/error.rs`; `cargo test --manifest-path src-tauri/Cargo.toml domain`.
 - Expected output: formatting exits 0 and domain/error tests pass with stable serialized fields.
 - Done when: valid canonical/unknown-type data round-trips, every named negative case is asserted, and the error JSON contract is exact.
 - Deviation stop: stop if a linked contract requires a second aggregate, a closed type enum, new package, or compatibility behavior.
@@ -98,7 +98,7 @@ No governing document is modified and no new ADR is required.
 - Forbidden: in-memory production fallback, generic repository traits, connection pool, migration framework, FTS/search, WAL/foreign-key hardening, event system, swallowed lock/SQL errors, or any additional dependency.
 - Negative cases: duplicate ID, missing ID, stale update/delete revision, malformed stored JSON, failed open/bootstrap, and invalid request surface the correct structured error and do not silently overwrite data.
 - Tests: colocated on-disk SQLite tests in `src-tauri/src/storage/assets.rs` plus service tests in `src-tauri/src/application/assets.rs`.
-- Commands: `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check`; `cargo test --manifest-path src-tauri/Cargo.toml storage`; `cargo test --manifest-path src-tauri/Cargo.toml application`.
+- Commands: `rustfmt --edition 2024 --check src-tauri/src/application/mod.rs src-tauri/src/application/assets.rs src-tauri/src/storage/mod.rs src-tauri/src/storage/assets.rs`; `cargo test --manifest-path src-tauri/Cargo.toml storage`; `cargo test --manifest-path src-tauri/Cargo.toml application`.
 - Expected output: all commands exit 0; a temporary file-backed database proves CRUD, reopen/read, revision increment, conflict, and deletion behavior.
 - Done when: the service returns the same identity/content/metadata written to real SQLite, concurrency conflicts are surfaced, and no forbidden subsystem exists.
 - Deviation stop: stop if bundled SQLite cannot build, the store needs a second initialization path, or reliable mutation would require work owned by LIB-002.
@@ -111,7 +111,7 @@ No governing document is modified and no new ADR is required.
 - Forbidden: SQL/filesystem behavior inside command handlers, arbitrary path parameters, process spawning, command-side fallback state, capability expansion, or registered-but-unreachable extra commands.
 - Negative cases: initialization failures terminate startup with actionable context; command validation/not-found/conflict/storage failures serialize as `PengError` rather than strings or panics.
 - Tests: Rust command-contract compilation plus existing domain/service tests; direct handlers remain thin enough to verify by review without a Tauri test harness.
-- Commands: `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check`; `cargo test --manifest-path src-tauri/Cargo.toml`; `cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings`.
+- Commands: `rustfmt --edition 2024 --check src-tauri/src/commands/mod.rs src-tauri/src/commands/assets.rs src-tauri/src/lib.rs`; `cargo test --manifest-path src-tauri/Cargo.toml`; `cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings`.
 - Expected output: all commands exit 0 and `lib.rs` visibly registers exactly `create_asset`, `get_asset`, `update_asset`, and `delete_asset` backed by managed SQLite state.
 - Done when: the production composition root has one reachable typed path from command to service to SQLite and capabilities are unchanged.
 - Deviation stop: stop if Tauri requires broadened webview permissions, global mutable state outside managed state, or an additional runtime/plugin dependency.
@@ -137,7 +137,7 @@ No governing document is modified and no new ADR is required.
 - Forbidden: weakening assertions, ignoring warnings/failures, accepting inconclusive output, committing generated build directories, merging the PR, or beginning LIB-002/UI-001.
 - Negative cases: verify source/tests cover invalid input, not-found, conflict, storage failure, and no-mutation outcomes; search the diff for fallback/placeholder/TODO/FTS/search additions.
 - Tests: full Rust unit suite, clippy, Svelte check, Vite build, and no-bundle Tauri release build.
-- Commands: `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check`; `cargo test --manifest-path src-tauri/Cargo.toml`; `cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings`; `npm run check`; `npm run build`; `npm run tauri build -- --no-bundle`; `git diff --check`.
+- Commands: `rustfmt --edition 2024 --check src-tauri/src/domain/mod.rs src-tauri/src/domain/asset.rs src-tauri/src/domain/error.rs src-tauri/src/application/mod.rs src-tauri/src/application/assets.rs src-tauri/src/storage/mod.rs src-tauri/src/storage/assets.rs src-tauri/src/commands/mod.rs src-tauri/src/commands/assets.rs src-tauri/src/lib.rs`; `cargo test --manifest-path src-tauri/Cargo.toml`; `cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings`; `npm run check`; `npm run build`; `npm run tauri build -- --no-bundle`; `git diff --check`.
 - Expected output: every command exits 0, the release executable is produced with bundled SQLite linkage, and `git diff --check` reports no defects.
 - Done when: exact command evidence plus source/tests prove the production UI → typed IPC → command → service → real SQLite CRUD path and all scoped negative cases.
 - Deviation stop: any failure, weakened assertion, undeclared changed path, unrelated lock churn, missing production caller, unbundled SQLite, or required out-of-scope change stops execution for disposition.
@@ -155,7 +155,7 @@ No governing document is modified and no new ADR is required.
 
 Run from the exact ticket worktree recorded by `take_ticket`:
 
-1. `cargo fmt --manifest-path src-tauri/Cargo.toml -- --check`
+1. `rustfmt --edition 2024 --check src-tauri/src/domain/mod.rs src-tauri/src/domain/asset.rs src-tauri/src/domain/error.rs src-tauri/src/application/mod.rs src-tauri/src/application/assets.rs src-tauri/src/storage/mod.rs src-tauri/src/storage/assets.rs src-tauri/src/commands/mod.rs src-tauri/src/commands/assets.rs src-tauri/src/lib.rs`
 2. `cargo test --manifest-path src-tauri/Cargo.toml`
 3. `cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings`
 4. `npm run check`
