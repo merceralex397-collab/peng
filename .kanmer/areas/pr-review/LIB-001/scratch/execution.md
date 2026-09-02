@@ -34,3 +34,5 @@ Implementation commit `4e28c71d0b47fb44c197eb328ae886101b365d9e` pushed on `LIB-
 - 2026-09-02T22:43:26.897Z lease-phase implementing → running-command (lease 29cead4d-dd3a-4d9c-b13c-be78f43fefc9 rev 11; expires 2026-09-02T23:43:26.885Z)
 
 Remediation round 1: closed review finding F-001 by enforcing exactly two decimal `schemaVersion` components and adding focused rejection assertions for `1` and `1.2.3` in `src-tauri/src/domain/asset.rs`. Commit `f29b9914ceca3fbbc23675ee7e865b2148e805e7` pushed to the existing PR https://github.com/merceralex397-collab/peng/pull/1; live PR head matches. Full revised validation rail passed, including 7 Rust tests, clippy, Svelte check, Vite build, Tauri no-bundle release build, scoped formatting, and diff check.
+
+- 2026-09-02T22:59:09.315Z stage verifying → preparing by peng-setup; reason: proof FAIL plan: post-build git status remained non-empty twice at merged SHA 91504e1e132167dbe383b36d3e834bfcbe047c3f for Cargo.toml and two forbidden generated schema paths despite identical normalized blob hashes; revise the plan to authorize a truthful Windows line-ending/generated-file rail
