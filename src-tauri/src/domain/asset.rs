@@ -193,14 +193,14 @@ fn validate_fields(
         ));
     }
     let schema_parts: Vec<&str> = schema_version.split('.').collect();
-    if schema_parts.is_empty()
+    if schema_parts.len() != 2
         || schema_parts
             .iter()
             .any(|part| part.is_empty() || !part.bytes().all(|b| b.is_ascii_digit()))
     {
         return Err(PengError::validation(
             "schemaVersion",
-            "Schema version must contain dot-separated decimal numbers.",
+            "Schema version must contain exactly two decimal components: major.minor.",
         ));
     }
     let name_len = name.chars().count();
@@ -321,6 +321,14 @@ mod tests {
             validate_create(&request).unwrap_err().field.as_deref(),
             Some("typeData")
         );
+        for schema_version in ["1", "1.2.3"] {
+            let mut request = valid_request();
+            request.schema_version = schema_version.into();
+            assert_eq!(
+                validate_create(&request).unwrap_err().field.as_deref(),
+                Some("schemaVersion")
+            );
+        }
         assert!(validate_uuid("not-a-uuid").is_err());
         assert!(validate_revision(0).is_err());
     }
